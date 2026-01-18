@@ -1,58 +1,181 @@
 package com.control.visitas.services;
 
 import com.control.visitas.dtos.CustomersDTO;
+import com.control.visitas.dtos.CustomersRequestDTO;
 import com.control.visitas.dtos.CustomersResponseDTO;
 import com.control.visitas.dtos.PagingDataDTO;
 import com.control.visitas.models.entities.Customers;
 import com.control.visitas.repository.CustomersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.control.visitas.util.Mapper;
+import com.control.visitas.util.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-@Transactional
-public class CustomersServices {
+@AllArgsConstructor
+public class CustomersServices implements ICustomersInterface{
 
 
     private final CustomersRepository customersRepository;
 
-    @Autowired
-    public CustomersServices(CustomersRepository customersRepository) {
-        this.customersRepository = customersRepository;
+    private final TechnicalService technicalService;
+
+    @Override
+    public CustomersResponseDTO findAllCustomers(int pageNumber, int pageSize) {
+        CustomersResponseDTO customersResponseDTO;
+        PagingDataDTO pagingDataDTO;
+        List<CustomersDTO> customersDTO;
+        customersDTO = customersRepository.findAll()
+                .stream()
+                .map(Mapper::customerToDTO)
+                .toList();
+        pagingDataDTO = new PagingDataDTO(pageNumber, pageSize, customersDTO.size());
+        customersResponseDTO = new CustomersResponseDTO(customersDTO, pagingDataDTO);
+
+        return customersResponseDTO;
     }
 
-    public List<Customers> getAllCustomers(){
-        return customersRepository.findAll();
+    @Override
+    public CustomersResponseDTO findFilterCustomers(String search, int pageNumber, int pageSize) {
+        CustomersResponseDTO customersResponseDTO;
+        PagingDataDTO pagingDataDTO;
+        List<CustomersDTO> customersDTO;
+        customersDTO = customersRepository.filterCustomers(search)
+                .stream()
+                .map(Mapper::customerToDTO)
+                .toList();
+        pagingDataDTO = new PagingDataDTO(pageNumber, pageSize, customersDTO.size());
+        customersResponseDTO = new CustomersResponseDTO(customersDTO, pagingDataDTO);
+
+        return customersResponseDTO;
     }
 
-    public List<Customers> getFiterCustomers(String search, int pageNumber, int pageSize){
-        return customersRepository.filterCustomers(search);
+    @Override
+    public CustomersDTO findCustomerByCode(String customerCode) {
+
+        return Mapper.customerToDTO(customersRepository.findCustomersByCustomerCode(customerCode));
+
     }
 
-    public void saveCustomer(Customers customers){
-        customersRepository.save(customers);
+    @Override
+    public CustomersResponseDTO findCustomersByTechnical(Long technicalId) {
+
+        CustomersResponseDTO customersResponseDTO;
+        PagingDataDTO pagingDataDTO;
+        List<CustomersDTO> customersDTO;
+        customersDTO = customersRepository.findAllByTechnicalId(technicalId)
+                .stream()
+                .map(Mapper::customerToDTO)
+                .toList();
+        pagingDataDTO = new PagingDataDTO(1, 10, customersDTO.size());
+        customersResponseDTO = new CustomersResponseDTO(customersDTO, pagingDataDTO);
+
+        return customersResponseDTO;
     }
 
-    public Customers getCustomerByCode(String code){
-        return customersRepository.findCustomersByCustomerCode(code);
+    @Override
+    @Transactional
+    public CustomersDTO saveCustomer(CustomersRequestDTO customersRequestDTO) {
+
+        Customers customer;
+        if (customersRequestDTO.getTechnical() == null){
+            customer = customersRepository.save(Customers.builder()
+                    .customerCode(customersRequestDTO.getCustomerCode())
+                    .isEnabled(customersRequestDTO.getIsEnabled())
+                    .name(customersRequestDTO.getName())
+                    .province(customersRequestDTO.getProvince())
+                    .coordinates(customersRequestDTO.getCoordinates())
+                    .email(customersRequestDTO.getEmail())
+                    .landlinePhone(customersRequestDTO.getLandlinePhone())
+                    .mobilePhone(customersRequestDTO.getMobilePhone())
+                    .address(customersRequestDTO.getAddress())
+                    .description(customersRequestDTO.getDescription())
+                    .zipCode(customersRequestDTO.getZipCode())
+                    .workSchedule(customersRequestDTO.getWorkSchedule())
+                    .locality(customersRequestDTO.getLocality())
+                    .country(customersRequestDTO.getCountry())
+                    .webPage(customersRequestDTO.getWebPage())
+                    .build());
+        }else{
+            customer = customersRepository.save(Customers.builder()
+                    .customerCode(customersRequestDTO.getCustomerCode())
+                    .isEnabled(customersRequestDTO.getIsEnabled())
+                    .name(customersRequestDTO.getName())
+                    .province(customersRequestDTO.getProvince())
+                    .coordinates(customersRequestDTO.getCoordinates())
+                    .email(customersRequestDTO.getEmail())
+                    .landlinePhone(customersRequestDTO.getLandlinePhone())
+                    .mobilePhone(customersRequestDTO.getMobilePhone())
+                    .address(customersRequestDTO.getAddress())
+                    .description(customersRequestDTO.getDescription())
+                    .zipCode(customersRequestDTO.getZipCode())
+                    .workSchedule(customersRequestDTO.getWorkSchedule())
+                    .locality(customersRequestDTO.getLocality())
+                    .country(customersRequestDTO.getCountry())
+                    .webPage(customersRequestDTO.getWebPage())
+                    .technical(technicalService.getTechnicalByID(customersRequestDTO.getTechnical().getId()))
+                    .build());
+        }
+
+        return Mapper.customerToDTO(customer);
     }
 
-    public List<Customers> getCustomersByTechnicalId(Long technicalId){
-        return customersRepository.findAllByTechnicalId(technicalId);
+    @Override
+    @Transactional
+    public CustomersDTO updateCustomer(CustomersRequestDTO customersRequestDTO) {
+
+        Customers customersUpdate = customersRepository
+                .findCustomersByCustomerCode(customersRequestDTO.getCustomerCode());
+        if (customersRequestDTO.getTechnical() == null){
+            customersUpdate.setCustomerCode(customersRequestDTO.getCustomerCode());
+            customersUpdate.setIsEnabled(customersRequestDTO.getIsEnabled());
+            customersUpdate.setName(customersRequestDTO.getName());
+            customersUpdate.setProvince(customersRequestDTO.getProvince());
+            customersUpdate.setCoordinates(customersRequestDTO.getCoordinates());
+            customersUpdate.setEmail(customersRequestDTO.getEmail());
+            customersUpdate.setLandlinePhone(customersRequestDTO.getLandlinePhone());
+            customersUpdate.setMobilePhone(customersRequestDTO.getMobilePhone());
+            customersUpdate.setAddress(customersRequestDTO.getAddress());
+            customersUpdate.setDescription(customersRequestDTO.getDescription());
+            customersUpdate.setZipCode(customersRequestDTO.getZipCode());
+            customersUpdate.setWorkSchedule(customersRequestDTO.getWorkSchedule());
+            customersUpdate.setLocality(customersRequestDTO.getLocality());
+            customersUpdate.setCountry(customersRequestDTO.getCountry());
+            customersUpdate.setWebPage(customersRequestDTO.getWebPage());
+            customersUpdate.setTechnical(null);
+        }else{
+            customersUpdate.setCustomerCode(customersRequestDTO.getCustomerCode());
+            customersUpdate.setIsEnabled(customersRequestDTO.getIsEnabled());
+            customersUpdate.setName(customersRequestDTO.getName());
+            customersUpdate.setProvince(customersRequestDTO.getProvince());
+            customersUpdate.setCoordinates(customersRequestDTO.getCoordinates());
+            customersUpdate.setEmail(customersRequestDTO.getEmail());
+            customersUpdate.setLandlinePhone(customersRequestDTO.getLandlinePhone());
+            customersUpdate.setMobilePhone(customersRequestDTO.getMobilePhone());
+            customersUpdate.setAddress(customersRequestDTO.getAddress());
+            customersUpdate.setDescription(customersRequestDTO.getDescription());
+            customersUpdate.setZipCode(customersRequestDTO.getZipCode());
+            customersUpdate.setWorkSchedule(customersRequestDTO.getWorkSchedule());
+            customersUpdate.setLocality(customersRequestDTO.getLocality());
+            customersUpdate.setCountry(customersRequestDTO.getCountry());
+            customersUpdate.setWebPage(customersRequestDTO.getWebPage());
+            customersUpdate.setTechnical(technicalService.getTechnicalByID(customersRequestDTO.getTechnical().getId()));
+        }
+
+        return Mapper.customerToDTO(customersRepository.save(customersUpdate));
     }
 
-    public void deleteCustomerByCode(String customersCode){
-        customersRepository.deleteByCustomerCode(customersCode);
-    }
+    @Override
+    @Transactional
+    public void deleteCustomer(Long customerId) {
 
-    public void updateCustomer(Customers customers){
-        customersRepository.save(customers);
-    }
+        if (!customersRepository.existsById(customerId)) {
+            throw new NotFoundException("Cliente no encontrado para eliminar");
+        }
 
-    public void deleteCustomerById(Long id){
-        customersRepository.deleteById(id);
+        customersRepository.deleteById(customerId);
     }
 }
