@@ -10,11 +10,6 @@ VALUES (1, 'A20251', true, 'Magdiel', 'Valladolid', '41.653943518386086, -4.7250
  '624877083', '624877083', 'Puente Colgante 48', 'Nuevo Cliente', 47006, '8-2pm', 'Valladolid', 'España', 'www.mailyn.com', 1);
 
 
-INSERT INTO public.installation (id, code_installation, customer_id)
-VALUES (1, '2025-A20251', 1),
-       (2, '2025-B20251', 2);
-
-
 INSERT INTO public.type_machine (id, type_machine)
 VALUES (1 , 'Split'), (2, 'Multisplit'), (3, 'Por conductos'), (4, 'Portátil'), (5, 'Solar split'), (6, 'De ventana'),
        (7, 'Fancoil'), (8, 'Fancoil inverter');
@@ -32,21 +27,21 @@ VALUES (1 , 'Instalacion'), (2, 'Limpieza de los filtros de aire'), (3, 'Limpiez
        (4, 'Verificación y ajuste del nivel de refrigerante'), (5, 'Verificación y ajuste del termostato'), (6, 'Verificación y ajuste del flujo de aire');
 
 
-INSERT INTO public.installations_services (id, start_date, quantity_equipments, type_services_id, technical_id, installation_id)
-VALUES (1, '2025-01-01 00:00:00', 2, 2, 1, 1),
-       (2, '2025-01-01 00:00:00', 2, 3, 1, 1);
+INSERT INTO public.installations_services (id, code_installation, start_date, end_date, final_reason, quantity_equipments, type_services_id, customer_id, technical_id)
+VALUES (1, '2025-A20251', '2025-01-01 00:00:00', '2025-02-01 00:00:00', 'OK', 2, 2, 1, 1),
+       (2, '2025-B20251', '2025-01-01 00:00:00', '2025-02-01 00:00:00', 'OK', 2, 3, 2, 1);
 
 
 INSERT INTO public.installations_services_machine (installations_services_id , machine_id)
 VALUES (1, 1), (1, 2), (2, 3), (2, 4);
 
 
-INSERT INTO public.incidence (id, incidence_code, incident_type, description, opening_date, is_operational, installation_id)
-VALUES (1, '2025-A20251-001', 'TECHNICAL_VISIT', 'Visita Correcta', '2025-01-01 00:00:00', false, 1);
+INSERT INTO public.incidence (id, incidence_code, incident_type, description, opening_date, closing_date, is_operational, incidence_solution, closed_by, installation_service_id)
+VALUES (1, '2025-A20251-001', 'TECHNICAL_VISIT', 'Visita Correcta', '2025-01-01 00:00:00', '2025-01-01 00:00:00', false, '', 'magdiel.santana', 1);
 
 
-INSERT INTO public.visits (id, visit_date, start_time, end_time, description, state_visit, installation_id)
-VALUES (1, '2025-01-01 00:00:00', '08:00:00', '10:00:00', 'Revision Anual', 'EXECUTED', 1);
+INSERT INTO public.visits (id, visit_date, start_time, end_time, description, state_visit)
+VALUES (1, '2025-01-01 00:00:00', '08:00:00', '10:00:00', 'Revision Anual', 'EXECUTED');
 
 
 INSERT INTO public.visit_installations_services (visits_id, installations_services_id)

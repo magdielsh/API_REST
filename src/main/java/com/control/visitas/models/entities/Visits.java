@@ -40,10 +40,6 @@ public class Visits {
     @Enumerated(EnumType.STRING)
     private StateVisit stateVisit;
 
-    @ManyToOne
-    @JoinColumn(name = "installation_id", referencedColumnName = "id", nullable = false)
-    private Installation installation;
-
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "visit_installations_services", joinColumns = @JoinColumn(name = "visits_id"), inverseJoinColumns = @JoinColumn(name = "installations_services_id"))
     private Set<InstallationsServices> installationsServicesVisits = new HashSet<InstallationsServices>();

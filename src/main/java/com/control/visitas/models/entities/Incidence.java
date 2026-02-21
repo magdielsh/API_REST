@@ -47,7 +47,7 @@ public class Incidence {
     private String closedBy;
 
     @ManyToOne
-    @JoinColumn(name = "installation_id", referencedColumnName = "id")
-    private Installation installation;
+    @JoinColumn(name = "installation_service_id", referencedColumnName = "id")
+    private InstallationsServices installationsServices;
 
 }

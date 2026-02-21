@@ -22,6 +22,9 @@ public class InstallationsServices {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(name = "code_installation", nullable = false, length = 50, unique = true)
+    private String codeInstallation;
+
     @Column(name = "start_date", nullable = false)
     private LocalDateTime startDate;
 
@@ -38,13 +41,13 @@ public class InstallationsServices {
     @JoinColumn(name = "type_services_id", nullable = false, referencedColumnName = "id")
     private Type_Services typeServices;
 
+    @OneToOne(targetEntity = Customers.class)
+    @JoinColumn(name = "customer_id", nullable = false, unique = true)
+    private Customers customers;
+
     @ManyToOne
     @JoinColumn(name = "technical_id", nullable = false, referencedColumnName = "id")
     private Technical technical;
-
-    @ManyToOne
-    @JoinColumn(name = "installation_id", referencedColumnName = "id")
-    private Installation installation;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "installations_services_machine", joinColumns = @JoinColumn(name = "installations_services_id"), inverseJoinColumns = @JoinColumn(name = "machine_id"))

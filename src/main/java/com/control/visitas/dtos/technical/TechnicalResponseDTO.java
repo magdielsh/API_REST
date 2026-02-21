@@ -10,11 +10,11 @@ import java.util.List;
 @NoArgsConstructor
 public class TechnicalResponseDTO {
 
-    private List<TechnicalDTO> technicalDTOS;
-    private PagingDataDTO pagingDataDTO;
+    private List<TechnicalDTO> technical;
+    private PagingDataDTO pagingData;
 
     public TechnicalResponseDTO(List<TechnicalDTO> technicalDTOS, PagingDataDTO pagingDataDTO) {
-        this.technicalDTOS = technicalDTOS;
-        this.pagingDataDTO = pagingDataDTO;
+        this.technical = technicalDTOS;
+        this.pagingData = pagingDataDTO;
     }
 }
