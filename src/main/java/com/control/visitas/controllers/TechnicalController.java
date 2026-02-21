@@ -1,101 +1,78 @@
 package com.control.visitas.controllers;
 
-import com.control.visitas.dtos.TechnicalRequestDTO;
-import com.control.visitas.dtos.TechnicalResponse;
-import com.control.visitas.models.entities.Technical;
+import com.control.visitas.dtos.technical.TechnicalRequestDTO;
+import com.control.visitas.dtos.technical.TechnicalDTO;
+import com.control.visitas.dtos.technical.TechnicalResponseDTO;
 import com.control.visitas.services.TechnicalService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.control.visitas.util.OnCreate;
+import com.control.visitas.util.OnUpdate;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @RestController
-@RequestMapping("technical")
+@RequestMapping("api/technical")
+@AllArgsConstructor
 public class TechnicalController {
 
     private final TechnicalService technicalService;
 
-    @Autowired
-    public TechnicalController(TechnicalService technicalService) {
-        this.technicalService = technicalService;
+    @GetMapping("/findAll")
+    public ResponseEntity<TechnicalResponseDTO> findAll(
+            @RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = "50") int pageSize
+    ){
+        TechnicalResponseDTO technicalResponseDTO = technicalService.findAllTechnical(pageNumber, pageSize);
+
+        return ResponseEntity.ok(technicalResponseDTO);
     }
 
-    @GetMapping("/findAll")
-    public ResponseEntity<List<TechnicalResponse>> findAll(){
-        List<TechnicalResponse> technicalResponses = technicalService.getAllTechnicals()
-                .stream()
-                .map(this::getTechnicalResponse).toList();
+    @GetMapping("/findFilterTechnical")
+    public ResponseEntity<TechnicalResponseDTO> findFilterTechnical(
+            @RequestParam(name = "search", defaultValue = " ") String search,
+            @RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = "50") int pageSize
+    ){
+        TechnicalResponseDTO technicalResponseDTO = technicalService.findFilterTechnical(search, pageNumber, pageSize);
 
-        return ResponseEntity.ok(technicalResponses);
+        return ResponseEntity.ok(technicalResponseDTO);
     }
 
     @GetMapping("find/{technicalId}")
-    public ResponseEntity<TechnicalResponse> findTechnicalById(@PathVariable Long technicalId){
-        TechnicalResponse technicalResponse = getTechnicalResponse(technicalService.getTechnicalByID(technicalId));
+    public ResponseEntity<TechnicalDTO> findTechnicalById(@PathVariable Long technicalId){
 
-        return ResponseEntity.ok(technicalResponse);
+        TechnicalDTO technicalDTO = technicalService.findTechnicalById(technicalId);
+
+        return ResponseEntity.ok(technicalDTO);
     }
 
     @PostMapping("/saveTechnical")
-    public ResponseEntity<String> saveTechnical(@RequestBody TechnicalRequestDTO technicalRequestDTO){
-        if(technicalRequestDTO.getName().isBlank()){
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<TechnicalDTO> saveTechnical(@Validated(OnCreate.class) @RequestBody TechnicalRequestDTO technicalRequestDTO){
 
-        technicalService.saveTechnical(Technical.builder()
-                        .name(technicalRequestDTO.getName())
-                        .email(technicalRequestDTO.getEmail())
-                        .mobilePhone(technicalRequestDTO.getMobilePhone())
-                        .address(technicalRequestDTO.getAddress())
-                        .province(technicalRequestDTO.getProvince())
-                        .locality(technicalRequestDTO.getLocality())
-                        .coordinates(technicalRequestDTO.getCoordinates())
-                        .build());
+        TechnicalDTO technicalDTO = technicalService.saveTechnical(technicalRequestDTO);
 
-        return ResponseEntity.ok("Technical Created");
-    }
-
-    @DeleteMapping("deleteTechnical/{technicalId}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Long technicalId){
-
-        if(technicalId != null){
-            technicalService.deleteTechnicalById(technicalId);
-            return ResponseEntity.ok("Registro Eliminado");
-        }
-
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(technicalDTO);
     }
 
     @PutMapping("/updateTechnical")
-    public ResponseEntity<String> updateTechnical(@RequestBody TechnicalRequestDTO technicalRequestDTO){
-        if(technicalRequestDTO.getName().isBlank()){
-            return ResponseEntity.badRequest().build();
-        }
-        Technical technicalUpdate = technicalService.getTechnicalByID(technicalRequestDTO.getId());
+    public ResponseEntity<TechnicalDTO> updateTechnical(@Validated(OnUpdate.class) @RequestBody TechnicalRequestDTO technicalRequestDTO){
 
-        technicalUpdate.setName(technicalRequestDTO.getName());
-        technicalUpdate.setEmail(technicalRequestDTO.getEmail());
-        technicalUpdate.setMobilePhone(technicalRequestDTO.getMobilePhone());
-        technicalUpdate.setAddress(technicalRequestDTO.getAddress());
-        technicalUpdate.setProvince(technicalRequestDTO.getProvince());
-        technicalUpdate.setLocality(technicalRequestDTO.getLocality());
-        technicalUpdate.setCoordinates(technicalRequestDTO.getCoordinates());
-
-        technicalService.updateTechnical(technicalUpdate);
-
-        return ResponseEntity.ok("Customer Updated");
+        return ResponseEntity.ok(technicalService.updateTechnical(technicalRequestDTO));
     }
 
-    private TechnicalResponse getTechnicalResponse(Technical technical) {
-            return new TechnicalResponse(
-                    technical.getId(),
-                    technical.getName(),
-                    technical.getEmail(),
-                    technical.getMobilePhone(),
-                    technical.getAddress(),
-                    technical.getProvince(),
-                    technical.getLocality(),
-                    technical.getCoordinates());
+    @DeleteMapping("deleteTechnical/{technicalId}")
+    public ResponseEntity<Map<String, String>> deleteTechnical(@PathVariable Long technicalId){
+
+        technicalService.deleteTechnical(technicalId);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Técnico eliminado exitosamente");
+        response.put("id", technicalId.toString());
+        return ResponseEntity.ok(response);
     }
 }

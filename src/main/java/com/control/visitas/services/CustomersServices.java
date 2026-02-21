@@ -1,13 +1,15 @@
 package com.control.visitas.services;
 
-import com.control.visitas.dtos.CustomersDTO;
-import com.control.visitas.dtos.CustomersRequestDTO;
-import com.control.visitas.dtos.CustomersResponseDTO;
+import com.control.visitas.dtos.customer.CustomersDTO;
+import com.control.visitas.dtos.customer.CustomersRequestDTO;
+import com.control.visitas.dtos.customer.CustomersResponseDTO;
 import com.control.visitas.dtos.PagingDataDTO;
+import com.control.visitas.exceptions.InvalidParameterException;
+import com.control.visitas.exceptions.ResourseNotFoundException;
 import com.control.visitas.models.entities.Customers;
 import com.control.visitas.repository.CustomersRepository;
+import com.control.visitas.services.interfaces.ICustomersInterface;
 import com.control.visitas.util.Mapper;
-import com.control.visitas.util.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +18,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CustomersServices implements ICustomersInterface{
+public class CustomersServices implements ICustomersInterface {
 
 
     private final CustomersRepository customersRepository;
@@ -56,6 +58,7 @@ public class CustomersServices implements ICustomersInterface{
     @Override
     public CustomersDTO findCustomerByCode(String customerCode) {
 
+        validateCustomerCode(customerCode);
         return Mapper.customerToDTO(customersRepository.findCustomersByCustomerCode(customerCode));
 
     }
@@ -116,7 +119,7 @@ public class CustomersServices implements ICustomersInterface{
                     .locality(customersRequestDTO.getLocality())
                     .country(customersRequestDTO.getCountry())
                     .webPage(customersRequestDTO.getWebPage())
-                    .technical(technicalService.getTechnicalByID(customersRequestDTO.getTechnical().getId()))
+                    .technical(technicalService.technicalById(customersRequestDTO.getTechnical().getId()))
                     .build());
         }
 
@@ -127,6 +130,7 @@ public class CustomersServices implements ICustomersInterface{
     @Transactional
     public CustomersDTO updateCustomer(CustomersRequestDTO customersRequestDTO) {
 
+        validateCustomerCode(customersRequestDTO.getCustomerCode());
         Customers customersUpdate = customersRepository
                 .findCustomersByCustomerCode(customersRequestDTO.getCustomerCode());
         if (customersRequestDTO.getTechnical() == null){
@@ -162,7 +166,7 @@ public class CustomersServices implements ICustomersInterface{
             customersUpdate.setLocality(customersRequestDTO.getLocality());
             customersUpdate.setCountry(customersRequestDTO.getCountry());
             customersUpdate.setWebPage(customersRequestDTO.getWebPage());
-            customersUpdate.setTechnical(technicalService.getTechnicalByID(customersRequestDTO.getTechnical().getId()));
+            customersUpdate.setTechnical(technicalService.technicalById(customersRequestDTO.getTechnical().getId()));
         }
 
         return Mapper.customerToDTO(customersRepository.save(customersUpdate));
@@ -170,12 +174,21 @@ public class CustomersServices implements ICustomersInterface{
 
     @Override
     @Transactional
-    public void deleteCustomer(Long customerId) {
+    public void deleteCustomer(String customerCode) {
 
-        if (!customersRepository.existsById(customerId)) {
-            throw new NotFoundException("Cliente no encontrado para eliminar");
+        validateCustomerCode(customerCode);
+        customersRepository.deleteByCustomerCode(customerCode);
+    }
+
+    public void validateCustomerCode (String customerCode) {
+
+        if (!customerCode.matches("^[A-Z]\\d{5}$")){
+            throw new InvalidParameterException(customerCode);
+        }
+        if (!customersRepository.existsByCustomerCode(customerCode)) {
+            throw new ResourseNotFoundException("Cliente con Código: " + customerCode + " no encontrado");
         }
 
-        customersRepository.deleteById(customerId);
     }
+
 }

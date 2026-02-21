@@ -20,6 +20,10 @@ public interface CustomersRepository extends JpaRepository<Customers, Long> {
 
     void deleteByCustomerCode (String customerCode);
 
+    boolean existsByCustomerCode(String customerCode);
+
     @Query(value = "SELECT * FROM customers WHERE customers.name ILIKE %:search% OR customers.email ILIKE %:search% OR customers.mobile_phone ILIKE %:search% ORDER BY id ASC", nativeQuery = true)
     List<Customers> filterCustomers(@Param("search") String search);
+
+
 }

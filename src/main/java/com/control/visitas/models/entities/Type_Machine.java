@@ -1,17 +1,14 @@
 package com.control.visitas.models.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Data
+@Builder
 @Table(name = "type_machine")
-@Getter
-@Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Type_Machine {
 
     @Id

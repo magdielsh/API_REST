@@ -1,10 +1,16 @@
 package com.control.visitas.controllers;
 
-import com.control.visitas.dtos.*;
+import com.control.visitas.dtos.customer.CustomersDTO;
+import com.control.visitas.dtos.customer.CustomersRequestDTO;
+import com.control.visitas.dtos.customer.CustomersResponseDTO;
 import com.control.visitas.services.CustomersServices;
 import com.control.visitas.services.TechnicalService;
+import com.control.visitas.util.OnCreate;
+import com.control.visitas.util.OnUpdate;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -55,31 +61,24 @@ public class CustomersController {
     }
 
     @PostMapping("/saveCustomer")
-    public ResponseEntity<CustomersDTO> saveCustomer(@RequestBody CustomersRequestDTO customersRequestDTO){
+    public ResponseEntity<CustomersDTO> saveCustomer(@Validated(OnCreate.class) @RequestBody CustomersRequestDTO customersRequestDTO){
 
-        if(customersRequestDTO.getCustomerCode().isBlank()){
-            return ResponseEntity.badRequest().build();
-        }
         CustomersDTO customersDTO = customersServices.saveCustomer(customersRequestDTO);
 
-        return ResponseEntity.ok(customersDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(customersDTO);
     }
 
     @PutMapping("/updateCustomer")
-    public ResponseEntity<CustomersDTO> updateCustomer(@RequestBody CustomersRequestDTO customersRequestDTO){
-
-        if(customersRequestDTO.getCustomerCode().isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<CustomersDTO> updateCustomer(@Validated(OnUpdate.class) @RequestBody CustomersRequestDTO customersRequestDTO){
 
         return ResponseEntity.ok(customersServices.updateCustomer(customersRequestDTO));
     }
 
-    @DeleteMapping("deleteCustomer/{customerId}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable Long customerId){
+    @DeleteMapping("deleteCustomer/{customerCode}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable String customerCode){
 
-        if(customerId != null){
-            customersServices.deleteCustomer(customerId);
+        if(customerCode != null){
+            customersServices.deleteCustomer(customerCode);
             return ResponseEntity.ok("Registro Eliminado");
         }
 

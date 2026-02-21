@@ -1,7 +1,7 @@
-package com.control.visitas.services;
-import com.control.visitas.dtos.CustomersDTO;
-import com.control.visitas.dtos.CustomersRequestDTO;
-import com.control.visitas.dtos.CustomersResponseDTO;
+package com.control.visitas.services.interfaces;
+import com.control.visitas.dtos.customer.CustomersDTO;
+import com.control.visitas.dtos.customer.CustomersRequestDTO;
+import com.control.visitas.dtos.customer.CustomersResponseDTO;
 
 public interface ICustomersInterface {
 
@@ -17,5 +17,6 @@ public interface ICustomersInterface {
 
     CustomersDTO updateCustomer(CustomersRequestDTO customersRequestDTO);
 
-    void deleteCustomer (Long customerId);
+    void deleteCustomer (String customerCode);
+
 }

@@ -1,5 +1,6 @@
-package com.control.visitas.dtos;
+package com.control.visitas.dtos.customer;
 
+import com.control.visitas.dtos.PagingDataDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

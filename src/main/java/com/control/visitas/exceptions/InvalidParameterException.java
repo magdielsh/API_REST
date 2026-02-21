@@ -1,15 +1,15 @@
 package com.control.visitas.exceptions;
 
-public class MethodArgumentTypeMismatchException extends BusinessException{
+public class InvalidParameterException extends BusinessException{
 
     private final String parameter;
 
-    public MethodArgumentTypeMismatchException(String parameter){
+    public InvalidParameterException(String parameter){
         super("");
         this.parameter = parameter;
     }
 
-    public MethodArgumentTypeMismatchException (String parameter, String messaje){
+    public InvalidParameterException(String parameter, String messaje){
         super(messaje);
         this.parameter = parameter;
     }
