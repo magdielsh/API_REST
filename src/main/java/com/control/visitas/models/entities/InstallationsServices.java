@@ -1,10 +1,7 @@
 package com.control.visitas.models.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -12,10 +9,12 @@ import java.util.Set;
 
 @Entity
 @Data
+@Builder
 @Table(name = "installations_services")
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class InstallationsServices {
 
     @Id

@@ -1,13 +1,12 @@
 package com.control.visitas.util;
 
 import com.control.visitas.dtos.customer.CustomersDTO;
+import com.control.visitas.dtos.installation_service.InstallationServiceDTO;
 import com.control.visitas.dtos.machine.MachineDTO;
 import com.control.visitas.dtos.technical.TechnicalDTO;
 import com.control.visitas.dtos.type_machine.TypeMachineDTO;
-import com.control.visitas.models.entities.Customers;
-import com.control.visitas.models.entities.Machine;
-import com.control.visitas.models.entities.Technical;
-import com.control.visitas.models.entities.Type_Machine;
+import com.control.visitas.dtos.type_service.TypeServiceDTO;
+import com.control.visitas.models.entities.*;
 
 public class Mapper {
 
@@ -118,6 +117,42 @@ public class Mapper {
                 machine.getModel(),
                 machine.getCustomer().getId(),
                 machine.getTypeMachine().getId()
+        );
+
+    }
+
+    /**
+     * Mapper TypeService to TypeServiceDTO
+     */
+    public static TypeServiceDTO typeServiceToDTO (Type_Services typeServices){
+
+        if (typeServices == null) return null;
+
+        return new TypeServiceDTO(
+                typeServices.getId(),
+                typeServices.getTypeService()
+        );
+    }
+
+    /**
+     * Mapper InstallationService to InstallationServiceToDTO
+     */
+
+    public static InstallationServiceDTO installationServiceToDTO(InstallationsServices installationsServices){
+
+        if (installationsServices == null) return null;
+
+        return new InstallationServiceDTO(
+                installationsServices.getId(),
+                installationsServices.getCodeInstallation(),
+                installationsServices.getStartDate(),
+                installationsServices.getEndDate(),
+                installationsServices.getFinalReason(),
+                installationsServices.getQuantityEquipments(),
+                installationsServices.getTypeServices().getId(),
+                installationsServices.getCustomers().getId(),
+                installationsServices.getTechnical().getId()
+
         );
 
     }
