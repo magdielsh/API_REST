@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -49,8 +49,6 @@ public class InstallationsServices {
     private Technical technical;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "installations_services_machine", joinColumns = @JoinColumn(name = "installations_services_id"), inverseJoinColumns = @JoinColumn(name = "machine_id"))
-    private Set<Machine> machines = new HashSet<Machine>();
-
-
+    @JoinTable(name = "installations_services_machine", joinColumns = @JoinColumn(name = "installations_services_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "machine_id", referencedColumnName = "id"))
+    private List<Machine> machines = new ArrayList<>();
 }

@@ -1,6 +1,6 @@
 package com.control.visitas.services;
 
-import com.control.visitas.dtos.type_machine.TypeMachineDTO;
+import com.control.visitas.dtos.TypeMachineDTO;
 import com.control.visitas.exceptions.ResourseNotFoundException;
 import com.control.visitas.models.entities.Type_Machine;
 import com.control.visitas.repository.TypeMachineRepository;

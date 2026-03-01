@@ -4,8 +4,8 @@ import com.control.visitas.dtos.customer.CustomersDTO;
 import com.control.visitas.dtos.installation_service.InstallationServiceDTO;
 import com.control.visitas.dtos.machine.MachineDTO;
 import com.control.visitas.dtos.technical.TechnicalDTO;
-import com.control.visitas.dtos.type_machine.TypeMachineDTO;
-import com.control.visitas.dtos.type_service.TypeServiceDTO;
+import com.control.visitas.dtos.TypeMachineDTO;
+import com.control.visitas.dtos.TypeServiceDTO;
 import com.control.visitas.models.entities.*;
 
 public class Mapper {
@@ -151,8 +151,8 @@ public class Mapper {
                 installationsServices.getQuantityEquipments(),
                 installationsServices.getTypeServices().getId(),
                 installationsServices.getCustomers().getId(),
-                installationsServices.getTechnical().getId()
-
+                installationsServices.getTechnical().getId(),
+                installationsServices.getMachines().stream().map(machine -> machineToDTO(machine)).toList()
         );
 
     }

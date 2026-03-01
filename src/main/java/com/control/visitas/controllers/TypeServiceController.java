@@ -1,10 +1,9 @@
 package com.control.visitas.controllers;
 
-import com.control.visitas.dtos.type_service.TypeServiceDTO;
+import com.control.visitas.dtos.TypeServiceDTO;
 import com.control.visitas.services.TypeServiceService;
 import com.control.visitas.util.OnCreate;
 import com.control.visitas.util.OnUpdate;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.control.visitas.services;
 
-import com.control.visitas.dtos.type_service.TypeServiceDTO;
+import com.control.visitas.dtos.TypeServiceDTO;
 import com.control.visitas.exceptions.ResourseNotFoundException;
 import com.control.visitas.models.entities.Type_Services;
 import com.control.visitas.repository.TypeServicesRepository;

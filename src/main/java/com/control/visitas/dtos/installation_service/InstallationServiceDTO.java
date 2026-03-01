@@ -1,5 +1,6 @@
 package com.control.visitas.dtos.installation_service;
 
+import com.control.visitas.dtos.machine.MachineDTO;
 import com.control.visitas.util.OnCreate;
 import com.control.visitas.util.OnUpdate;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.Null;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Getter
@@ -47,4 +49,7 @@ public class InstallationServiceDTO {
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "El técnico no puede ser nulo")
     private Long technicalId;
+
+    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "Los equipos no pueden ser nulos")
+    private List<MachineDTO> machines;
 }

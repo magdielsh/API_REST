@@ -1,4 +1,4 @@
-package com.control.visitas.dtos.type_service;
+package com.control.visitas.dtos;
 
 import com.control.visitas.util.OnCreate;
 import com.control.visitas.util.OnUpdate;

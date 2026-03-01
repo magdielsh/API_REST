@@ -1,4 +1,4 @@
-package com.control.visitas.dtos.type_machine;
+package com.control.visitas.dtos;
 
 import com.control.visitas.util.OnCreate;
 import com.control.visitas.util.OnUpdate;

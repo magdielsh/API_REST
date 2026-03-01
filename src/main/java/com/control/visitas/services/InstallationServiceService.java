@@ -3,12 +3,11 @@ package com.control.visitas.services;
 import com.control.visitas.dtos.PagingDataDTO;
 import com.control.visitas.dtos.installation_service.InstallationServiceDTO;
 import com.control.visitas.dtos.installation_service.InstallationServiceResponseDTO;
+import com.control.visitas.dtos.machine.MachineDTO;
 import com.control.visitas.exceptions.ResourseNotFoundException;
 import com.control.visitas.models.entities.InstallationsServices;
-import com.control.visitas.repository.CustomersRepository;
-import com.control.visitas.repository.InstallationsServicesRepository;
-import com.control.visitas.repository.TechnicalRepository;
-import com.control.visitas.repository.TypeServicesRepository;
+import com.control.visitas.models.entities.Machine;
+import com.control.visitas.repository.*;
 import com.control.visitas.services.interfaces.IInstallationsServiceInterface;
 import com.control.visitas.util.Mapper;
 import jakarta.transaction.Transactional;
@@ -28,6 +27,8 @@ public class InstallationServiceService implements IInstallationsServiceInterfac
     private final CustomersRepository customersRepository;
 
     private final TechnicalRepository technicalRepository;
+
+    private final MachineRepository machineRepository;
 
     @Override
     public InstallationServiceResponseDTO findAllInstallationService(int pageNumber, int pageSize) {
@@ -81,6 +82,11 @@ public class InstallationServiceService implements IInstallationsServiceInterfac
                        .customers(customersRepository.getReferenceById(installationServiceDTO.getCustomerId()))
                        .technical(technicalRepository.getReferenceById(installationServiceDTO.getTechnicalId()))
                        .quantityEquipments(installationServiceDTO.getQuantityEquipments())
+                       .machines(installationServiceDTO.getMachines()
+                               .stream()
+                               .map(machineDTO -> machineRepository.findById(machineDTO.getId()).get())
+                               .toList()
+                       )
                        .build()
         );
 

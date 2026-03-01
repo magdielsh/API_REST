@@ -1,6 +1,6 @@
 package com.control.visitas.controllers;
 
-import com.control.visitas.dtos.type_machine.TypeMachineDTO;
+import com.control.visitas.dtos.TypeMachineDTO;
 import com.control.visitas.services.TypeMachineService;
 import com.control.visitas.util.OnCreate;
 import com.control.visitas.util.OnUpdate;

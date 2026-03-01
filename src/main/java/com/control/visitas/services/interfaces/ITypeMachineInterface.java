@@ -1,6 +1,6 @@
 package com.control.visitas.services.interfaces;
 
-import com.control.visitas.dtos.type_machine.TypeMachineDTO;
+import com.control.visitas.dtos.TypeMachineDTO;
 
 import java.util.List;
 

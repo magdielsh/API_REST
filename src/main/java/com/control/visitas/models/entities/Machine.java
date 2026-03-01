@@ -3,6 +3,9 @@ package com.control.visitas.models.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "machine")
@@ -36,5 +39,8 @@ public class Machine {
     @ManyToOne
     @JoinColumn(name = "type_machine_id", nullable = false, referencedColumnName = "id")
     private Type_Machine typeMachine;
+
+    @ManyToMany(mappedBy = "machines") // Lado no propietario
+    private List<InstallationsServices> installationsServices = new ArrayList<>();
 
 }
