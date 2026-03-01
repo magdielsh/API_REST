@@ -2,22 +2,19 @@ package com.control.visitas.models.entities;
 
 import com.control.visitas.models.enums.StateVisit;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Data
+@Builder
 @Table(name = "visits")
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class Visits {
 
     @Id
@@ -40,12 +37,11 @@ public class Visits {
     @Enumerated(EnumType.STRING)
     private StateVisit stateVisit;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "visit_installations_services", joinColumns = @JoinColumn(name = "visits_id"), inverseJoinColumns = @JoinColumn(name = "installations_services_id"))
-    private Set<InstallationsServices> installationsServicesVisits = new HashSet<InstallationsServices>();
+    @ManyToOne
+    @JoinColumn(name = "installations_services_id", nullable = false, referencedColumnName = "id")
+    private InstallationsServices installationsServices;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "visit_technical", joinColumns = @JoinColumn(name = "visits_id"), inverseJoinColumns = @JoinColumn(name = "technical_id"))
-    private Set<Technical> technicalsVisit = new HashSet<Technical>();
-
+    @ManyToOne
+    @JoinColumn(name = "technical_id", nullable = false, referencedColumnName = "id")
+    private Technical technical;
 }

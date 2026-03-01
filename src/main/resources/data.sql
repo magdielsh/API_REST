@@ -40,13 +40,5 @@ INSERT INTO public.incidence (id, incidence_code, incident_type, description, op
 VALUES (1, '2025-A20251-001', 'TECHNICAL_VISIT', 'Visita Correcta', '2025-01-01 00:00:00', '2025-01-01 00:00:00', false, '', 'magdiel.santana', 1);
 
 
-INSERT INTO public.visits (id, visit_date, start_time, end_time, description, state_visit)
-VALUES (1, '2025-01-01 00:00:00', '08:00:00', '10:00:00', 'Revision Anual', 'EXECUTED');
-
-
-INSERT INTO public.visit_installations_services (visits_id, installations_services_id)
-VALUES (1, 1);
-
-
-INSERT INTO public.visit_technical (visits_id, technical_id)
-VALUES (1, 1);
+INSERT INTO public.visits (id, visit_date, start_time, end_time, description, state_visit, installations_services_id, technical_id)
+VALUES (1, '2025-01-01 00:00:00', '08:00:00', '10:00:00', 'Revision Anual', 'EXECUTED', 1, 1);

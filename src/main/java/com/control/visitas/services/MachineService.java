@@ -51,7 +51,8 @@ public class MachineService implements IMachineInterface {
     @Override
     public MachineDTO saveMachine(MachineDTO machineDTO) {
 
-        Machine machine = machineRepository.save(Machine.builder()
+        Machine machine = machineRepository.save(
+                Machine.builder()
                         .identifier(machineDTO.getIdentifier())
                         .serialNumber(machineDTO.getSerialNumber())
                         .brand(machineDTO.getBrand())

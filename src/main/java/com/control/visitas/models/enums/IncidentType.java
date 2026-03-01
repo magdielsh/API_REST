@@ -2,9 +2,9 @@ package com.control.visitas.models.enums;
 
 public enum IncidentType {
 
-    COMUNICATION,
+    COMMUNICATION,
     TECHNICAL_VISIT,
-    RECOMENDATION,
+    RECOMMENDATION,
     AGENDA
 
 }

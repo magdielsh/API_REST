@@ -2,19 +2,18 @@ package com.control.visitas.models.entities;
 
 import com.control.visitas.models.enums.IncidentType;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Builder
 @Table(name = "incidence")
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Incidence {
 
     @Id

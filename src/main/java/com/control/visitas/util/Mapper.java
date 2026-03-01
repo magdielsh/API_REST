@@ -1,5 +1,7 @@
 package com.control.visitas.util;
 
+import com.control.visitas.dtos.IncidenceDTO;
+import com.control.visitas.dtos.VisitDTO;
 import com.control.visitas.dtos.customer.CustomersDTO;
 import com.control.visitas.dtos.installation_service.InstallationServiceDTO;
 import com.control.visitas.dtos.machine.MachineDTO;
@@ -7,6 +9,7 @@ import com.control.visitas.dtos.technical.TechnicalDTO;
 import com.control.visitas.dtos.TypeMachineDTO;
 import com.control.visitas.dtos.TypeServiceDTO;
 import com.control.visitas.models.entities.*;
+
 
 public class Mapper {
 
@@ -152,8 +155,48 @@ public class Mapper {
                 installationsServices.getTypeServices().getId(),
                 installationsServices.getCustomers().getId(),
                 installationsServices.getTechnical().getId(),
-                installationsServices.getMachines().stream().map(machine -> machineToDTO(machine)).toList()
+                installationsServices.getMachines().stream().map(Mapper::machineToDTO).toList()
         );
+    }
 
+    /**
+     * Mapper Incidence to IncidenceDTO
+     */
+
+    public static IncidenceDTO incidenceToDTO (Incidence incidence){
+
+        if (incidence == null) return null;
+
+        return new IncidenceDTO(
+                incidence.getId(),
+                incidence.getIncidenceCode(),
+                incidence.getIncidentType(),
+                incidence.getDescription(),
+                incidence.getOpeningDate(),
+                incidence.getClosingDate(),
+                incidence.isOperational(),
+                incidence.getIncidenceSolution(),
+                incidence.getClosedBy(),
+                incidence.getInstallationsServices().getId()
+                );
+    }
+
+    /**
+     * Mapper Visit to VisitDTO
+     */
+    public static VisitDTO visitToDTO (Visits visits){
+
+        if (visits == null) return null;
+
+        return new VisitDTO(
+                visits.getId(),
+                visits.getVisitDate(),
+                visits.getStartTime(),
+                visits.getEndTime(),
+                visits.getDescription(),
+                visits.getStateVisit(),
+                visits.getInstallationsServices().getId(),
+                visits.getTechnical().getId()
+        );
     }
 }
