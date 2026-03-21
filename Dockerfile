@@ -5,12 +5,12 @@
 #ENTRYPOINT ["java", "-jar", "app_visitas.jar"]
 
 
-FROM eclipse-temurin:21-jdk
+FROM maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /app
 COPY . .
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY --from=builder app/target/*.jar app_visitas.jar
+COPY --from=builder /app/target/*.jar app_visitas.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app_visitas.jar"]
