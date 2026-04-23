@@ -1,7 +1,6 @@
 package com.control.visitas.exceptions;
 
 import com.control.visitas.dtos.ErrorResponseDTO;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -185,6 +184,22 @@ public class GlobalExceptionHandler{
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponseDTO);
     }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> emailAlreadyExistsException(
+            EmailAlreadyExistsException ex, HttpServletRequest request
+    ) {
+        ErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
+                .errorCode(HttpStatus.CONFLICT.toString())
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDTO);
+    }
+
+
 
 
 //    // ─────────────────────────────────────────────────────────────────

@@ -39,6 +39,9 @@ public class UserEntity implements UserDetails {
     @NotBlank
     private String password;
 
+    @Builder.Default
+    private boolean enabled = false;
+
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = Role.class, cascade = CascadeType.PERSIST)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
@@ -57,6 +60,7 @@ public class UserEntity implements UserDetails {
         return password;
     }
 
+
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();
@@ -74,6 +78,6 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return enabled;
     }
 }
