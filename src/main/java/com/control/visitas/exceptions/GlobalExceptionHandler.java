@@ -1,12 +1,15 @@
 package com.control.visitas.exceptions;
 
 import com.control.visitas.dtos.ErrorResponseDTO;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -147,5 +150,71 @@ public class GlobalExceptionHandler{
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDTO);
     }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Acceso denegado (credenciales incorrectas)
+    // ─────────────────────────────────────────────────────────────────
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBadCredentials(
+            BadCredentialsException ex,
+            HttpServletRequest request
+    ){
+        ErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
+                .errorCode(HttpStatus.UNAUTHORIZED.toString())
+                .message("Credenciales incorrectas")
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDTO);
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Acceso denegado (usuario autenticado pero sin rol suficiente)
+    // ─────────────────────────────────────────────────────────────────
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAccessDenied(
+            AuthorizationDeniedException ex, HttpServletRequest request
+    ) {
+        ErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
+                .errorCode(HttpStatus.FORBIDDEN.toString())
+                .message("No tienes permisos para acceder a este recurso")
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponseDTO);
+    }
+
+
+//    // ─────────────────────────────────────────────────────────────────
+//    // 3. JWT expirado — lanzado por JJWT al parsear el token
+//    // ─────────────────────────────────────────────────────────────────
+//    @ExceptionHandler(ExpiredJwtException.class)
+//    public ResponseEntity<ErrorResponse> handleExpiredJwt(
+//            ExpiredJwtException ex, HttpServletRequest request
+//    ) {
+//        return buildResponse(
+//                HttpStatus.UNAUTHORIZED,
+//                "El access token expiró. Usa el refresh token.",
+//                request
+//        );
+//    }
+//
+
+//
+//    // ─────────────────────────────────────────────────────────────────
+//    // 5. JWT con formato roto (no tiene 3 partes, no es Base64, etc.)
+//    // ─────────────────────────────────────────────────────────────────
+//    @ExceptionHandler(MalformedJwtException.class)
+//    public ResponseEntity<ErrorResponse> handleMalformedJwt(
+//            MalformedJwtException ex, HttpServletRequest request
+//    ) {
+//        return buildResponse(
+//                HttpStatus.UNAUTHORIZED,
+//                "Token con formato inválido.",
+//                request
+//        );
+//    }
 
 }

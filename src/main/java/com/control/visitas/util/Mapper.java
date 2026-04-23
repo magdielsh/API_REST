@@ -1,14 +1,14 @@
 package com.control.visitas.util;
 
-import com.control.visitas.dtos.IncidenceDTO;
-import com.control.visitas.dtos.VisitDTO;
+import com.control.visitas.dtos.*;
 import com.control.visitas.dtos.customer.CustomersDTO;
 import com.control.visitas.dtos.installation_service.InstallationServiceDTO;
 import com.control.visitas.dtos.machine.MachineDTO;
 import com.control.visitas.dtos.technical.TechnicalDTO;
-import com.control.visitas.dtos.TypeMachineDTO;
-import com.control.visitas.dtos.TypeServiceDTO;
 import com.control.visitas.models.entities.*;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class Mapper {
@@ -197,6 +197,30 @@ public class Mapper {
                 visits.getStateVisit(),
                 visits.getInstallationsServices().getId(),
                 visits.getTechnical().getId()
+        );
+    }
+
+    /**
+     * Mapper Visit to VisitDTO
+     */
+    public static UserDTO userToDTO (UserEntity userEntity){
+
+        if (userEntity == null) return null;
+
+        Set<Role> roles = userEntity.getRoles()
+                .stream()
+                .map(role -> Role.builder()
+                        .id(role.getId())
+                        .name(role.getName())
+                        .build())
+                .collect(Collectors.toSet());
+
+        return new UserDTO(
+                userEntity.getId(),
+                userEntity.getEmail(),
+                userEntity.getUsername(),
+                userEntity.getPassword(),
+                roles
         );
     }
 }

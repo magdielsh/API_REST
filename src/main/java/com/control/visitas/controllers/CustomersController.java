@@ -10,6 +10,7 @@ import com.control.visitas.util.OnUpdate;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class CustomersController {
     private final TechnicalService technicalService;
 
     @GetMapping("/findAll")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CustomersResponseDTO> findAll(
             @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = "0") int pageSize
@@ -77,7 +79,7 @@ public class CustomersController {
     @DeleteMapping("deleteCustomer/{customerCode}")
     public ResponseEntity<String> deleteCustomer(@PathVariable String customerCode){
 
-        if(customerCode != null){
+        if(customerCode != " "){
             customersServices.deleteCustomer(customerCode);
             return ResponseEntity.ok("Registro Eliminado");
         }
